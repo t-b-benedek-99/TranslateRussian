@@ -20,6 +20,12 @@ public class TextFileSplitter {
         int lines = 100;
 
         try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch(Exception e) {
+            System.out.println("Error setting native LAF: " + e);
+        }
+
+        try {
             chooseInputFilePath();
             chooseOutputFilePath();
             readFileData(inputFilePath, lines);
@@ -30,7 +36,7 @@ public class TextFileSplitter {
 
     public static void chooseInputFilePath() {
         //JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        JFileChooser jfc = new JFileChooser("c:\\LANGUAGE\\RUSSIAN\\5000\\voices\\");
+        JFileChooser jfc = new JFileChooser("c:\\LANGUAGE\\RUSSIAN\\");
         jfc.setDialogTitle("Choose your file input text file: ");
         jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
@@ -52,7 +58,7 @@ public class TextFileSplitter {
 
     public static void chooseOutputFilePath() {
         //JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        JFileChooser jfc = new JFileChooser("c:\\LANGUAGE\\RUSSIAN\\5000\\");
+        JFileChooser jfc = new JFileChooser("c:\\LANGUAGE\\RUSSIAN\\");
         jfc.setDialogTitle("Choose a directory to save your files (the audio files and the smart text file output): ");
         jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 

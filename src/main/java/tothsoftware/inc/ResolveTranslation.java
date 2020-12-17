@@ -1,13 +1,16 @@
 package tothsoftware.inc;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.*;
@@ -15,28 +18,23 @@ import org.openqa.selenium.support.ui.*;
 
 public class ResolveTranslation {
 
-    public static ArrayList<String> words;
-    public static ArrayList<String> wordsExcluded;
-    public static ArrayList<String> hungarianMeaning;
-    public static ArrayList<String> wordsDetails;
-    public static ArrayList<String> wordsWithIssues;
-    public static ArrayList<String> wordsOut;
+    public static ArrayList<String> words = new ArrayList<String>();;
+    public static ArrayList<String> wordsExcluded = new ArrayList<String>();;
+    public static ArrayList<String> hungarianMeaning = new ArrayList<String>();;
+    public static ArrayList<String> wordsDetails = new ArrayList<String>();
+    public static ArrayList<String> wordsWithIssues = new ArrayList<String>();
+    public static ArrayList<String> wordsOut = new ArrayList<String>();
+    public static JCheckBox split = new JCheckBox("Split at \"-\"?");
+    public static JDialog dialog = new JDialog();
+    public static JButton button = new JButton("OK");
 
+    public static String inputFileName;
     public static String inputFilePath;
     public static String outputFilePath;
     public static String outputFilePathIssues;
     public static String outputFilePathExcluded;
 
-    public static String inputFileName;
-
     public static void main(String[] args) throws InterruptedException {
-
-        words = new ArrayList<String>();
-        wordsExcluded = new ArrayList<String>();
-        hungarianMeaning = new ArrayList<String>();
-        wordsDetails = new ArrayList<String>();
-        wordsWithIssues = new ArrayList<String>();
-        wordsOut = new ArrayList<String>();
 
         initUI();
 
@@ -54,8 +52,33 @@ public class ResolveTranslation {
 
     }
 
+    public static void selectOptions() {
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch(Exception e) {
+            System.out.println("Error setting native LAF: " + e);
+        }
+
+        dialog.setLayout(new FlowLayout());
+
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                dialog.dispose();
+            }
+        });
+
+        dialog.add(split);
+        dialog.add(button);
+        dialog.setSize(480, 150);
+        dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        dialog.setModal(true);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+    }
+
     public static void chooseInputFilePath() {
-        JFileChooser jfc = new JFileChooser("c:\\LANGUAGE\\RUSSIAN\\Biglist\\voices\\");
+        JFileChooser jfc = new JFileChooser("c:\\LANGUAGE\\RUSSIAN\\");
         jfc.setDialogTitle("Choose your file input text file: ");
         jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
@@ -76,7 +99,7 @@ public class ResolveTranslation {
     }
 
     public static void chooseOutputFilePath() {
-        JFileChooser jfc = new JFileChooser("c:\\LANGUAGE\\RUSSIAN\\Biglist\\voices\\");
+        JFileChooser jfc = new JFileChooser("c:\\LANGUAGE\\RUSSIAN\\");
         jfc.setDialogTitle("Choose a directory to save your files (the audio files and the smart text file output): ");
         jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
@@ -88,8 +111,8 @@ public class ResolveTranslation {
                 outputFilePathIssues = jfc.getSelectedFile().toString() + inputFileName + "_issues.txt";
                 outputFilePathExcluded = jfc.getSelectedFile().toString() + inputFileName + "_excluded.txt";
                 System.out.println("Your output file will be called: " + outputFilePath);
-                System.out.println("Your output file for problematic words: " + outputFilePathIssues);
-                System.out.println("Your output file for excluded words: " + outputFilePathIssues);
+                System.out.println("Your output file for problematic hungarianName: " + outputFilePathIssues);
+                System.out.println("Your output file for excluded hungarianName: " + outputFilePathIssues);
             } else {
                 JOptionPane.showMessageDialog(new JFrame(), "You have to choose a directory\nPlease restart the program and try again!", "", JOptionPane.WARNING_MESSAGE);
                 System.exit(0);
@@ -102,8 +125,14 @@ public class ResolveTranslation {
 
     public static void initUI() {
 
-        chooseInputFilePath();
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch(Exception e) {
+            System.out.println("Error setting native LAF: " + e);
+        }
 
+        selectOptions();
+        chooseInputFilePath();
         chooseOutputFilePath();
     }
 
@@ -111,7 +140,7 @@ public class ResolveTranslation {
         try {
             FileInputStream file;
             if (inputFilePath == null || inputFilePath == "") {
-                throw new NoInputFilePathDeclaredException();
+                throw new Exception();
             } else {
                 file = new FileInputStream(inputFilePath);
             }
@@ -121,17 +150,24 @@ public class ResolveTranslation {
             String currentWord;
             while (line != null) {
                 currentWord = line.substring(0, line.indexOf("["));
+                currentWord.trim();
                 if (!currentWord.contains(" ")) {
-                    if (currentWord.contains("-")) {
-                        String firstPart = currentWord.substring(0, currentWord.indexOf("-"));
-                        String secondPart = currentWord.substring(currentWord.indexOf("-") + 1, currentWord.length());
-                        words.add(firstPart);
-                        words.add(secondPart);
-                    } else {
+                    if(split.isSelected()) {
+                        if (currentWord.contains("-")) {
+                            String firstPart = currentWord.substring(0, currentWord.indexOf("-"));
+                            String secondPart = currentWord.substring(currentWord.indexOf("-") + 1, currentWord.length());
+                            words.add(firstPart);
+                            words.add(secondPart);
+                        } else {
+                            words.add(currentWord);
+                        }
+                    }
+                    else {
                         words.add(currentWord);
                     }
                 } else {
-                    wordsExcluded.add(currentWord);
+                    //wordsExcluded.add(currentWord);
+                    wordsExcluded.add(line);
                 }
 
                 line = br.readLine();
@@ -139,8 +175,11 @@ public class ResolveTranslation {
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (NoInputFilePathDeclaredException e) {
-            JOptionPane.showMessageDialog(new JFrame(), "Oops: Some error occured, no input file is specified in: readInput() method...\nPlease restart the program and try again!", "", JOptionPane.WARNING_MESSAGE);
+        } catch (Exception e) {
+            //JOptionPane.showMessageDialog(new JFrame(), "Oops: Some error occured, no input file is specified in: readInput() method...\nPlease restart the program and try again!", "", JOptionPane.WARNING_MESSAGE);
+
+            e.printStackTrace();
+
             System.exit(0);
         }
     }
@@ -154,8 +193,9 @@ public class ResolveTranslation {
 
         for (int i = 0; i < words.size(); i++) {
             try {
-                //If it's not possible to click on the radio button below, it's probably because we have an
-                // advertisement on the page. This try-catch gives us 5 seconds to click on it manually.
+
+                System.out.print(words.get(i) + ": ");
+
                 try {
                     WebElement strictnessButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@class='strictness_match_full']")));
                     strictnessButton.click();
@@ -163,15 +203,12 @@ public class ResolveTranslation {
                     Thread.sleep(5000);
                 }
 
-                //Wait for the input field and type the Russian word into it
                 WebElement textInputField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='word']")));
                 textInputField.sendKeys(words.get(i));
 
-                //Click on the submit button.
                 WebElement submitButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"searchbutton\"]")));
                 submitButton.click();
 
-                //Wait for the 'result' or the 'noresult'.
                 wait.until(ExpectedConditions.or(
                         ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@class='result']/a")),
                         ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@class='noresult']/tbody/tr/td/b[contains(text(), 'Nincs ilyen kifejezés a szótárban, vagy ki van szűrve, mert vulgáris')]")))
@@ -270,7 +307,7 @@ public class ResolveTranslation {
 
     public static void assembleOutput() {
         for (int i = 0; i < words.size(); i++) {
-            wordsOut.add(words.get(i) + "[sound:" + words.get(i) + ".mp3];" + hungarianMeaning.get(i) + " " + wordsDetails.get(i));
+            wordsOut.add(words.get(i) + "[sound:" + words.get(i).trim() + ".mp3];" + hungarianMeaning.get(i).trim() + " " + wordsDetails.get(i));
         }
         writeToFile(outputFilePath, wordsOut);
         writeToFile(outputFilePathIssues, wordsWithIssues);

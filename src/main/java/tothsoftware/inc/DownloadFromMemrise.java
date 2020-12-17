@@ -28,7 +28,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-public class DownloadRussianWords {
+public class DownloadFromMemrise {
 
     public static ArrayList<String> russianWords;
     public static ArrayList<String> englishWords;
@@ -109,7 +109,7 @@ public class DownloadRussianWords {
     }
 
     public static void chooseOutputFilePath() {
-        JFileChooser jfc = new JFileChooser("c:\\LANGUAGE\\RUSSIAN\\5000\\");
+        JFileChooser jfc = new JFileChooser("c:\\LANGUAGE\\RUSSIAN\\");
         jfc.setDialogTitle("Choose a directory to save your files (the audio files and the smart text file output): ");
         jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
@@ -117,7 +117,7 @@ public class DownloadRussianWords {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             if (jfc.getSelectedFile().isDirectory()) {
                 System.out.println("You selected the following output directory: " + jfc.getSelectedFile());
-                outputFilePath = jfc.getSelectedFile().toString() + "\\words.txt";
+                outputFilePath = jfc.getSelectedFile().toString() + "\\hungarianName.txt";
             } else {
                 JOptionPane.showMessageDialog(new JFrame(), "You have to choose a directory\nPlease restart the program and try again!", "", JOptionPane.WARNING_MESSAGE);
                 System.exit(0);
@@ -139,7 +139,7 @@ public class DownloadRussianWords {
         while(true) {
             processPage(driver, wait);
             System.out.print("Page " + pageCount + ". has been processed. ");
-            System.out.println("Number of Russian words: " + russianWords.size() + ".");
+            System.out.println("Number of Russian hungarianName: " + russianWords.size() + ".");
             List<WebElement> nextButton = driver.findElements(By.xpath("//a[@class='level-nav level-nav-next']"));
             int finish = nextButton.size();
             if(finish > 0) {
