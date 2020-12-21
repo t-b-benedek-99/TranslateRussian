@@ -117,7 +117,7 @@ public class DownloadFromMemrise {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             if (jfc.getSelectedFile().isDirectory()) {
                 System.out.println("You selected the following output directory: " + jfc.getSelectedFile());
-                outputFilePath = jfc.getSelectedFile().toString() + "\\hungarianName.txt";
+                outputFilePath = jfc.getSelectedFile().toString() + "\\hungarianPart.txt";
             } else {
                 JOptionPane.showMessageDialog(new JFrame(), "You have to choose a directory\nPlease restart the program and try again!", "", JOptionPane.WARNING_MESSAGE);
                 System.exit(0);
@@ -139,7 +139,7 @@ public class DownloadFromMemrise {
         while(true) {
             processPage(driver, wait);
             System.out.print("Page " + pageCount + ". has been processed. ");
-            System.out.println("Number of Russian hungarianName: " + russianWords.size() + ".");
+            System.out.println("Number of Russian hungarianPart: " + russianWords.size() + ".");
             List<WebElement> nextButton = driver.findElements(By.xpath("//a[@class='level-nav level-nav-next']"));
             int finish = nextButton.size();
             if(finish > 0) {

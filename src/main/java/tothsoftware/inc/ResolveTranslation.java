@@ -111,8 +111,8 @@ public class ResolveTranslation {
                 outputFilePathIssues = jfc.getSelectedFile().toString() + inputFileName + "_issues.txt";
                 outputFilePathExcluded = jfc.getSelectedFile().toString() + inputFileName + "_excluded.txt";
                 System.out.println("Your output file will be called: " + outputFilePath);
-                System.out.println("Your output file for problematic hungarianName: " + outputFilePathIssues);
-                System.out.println("Your output file for excluded hungarianName: " + outputFilePathIssues);
+                System.out.println("Your output file for problematic hungarianPart: " + outputFilePathIssues);
+                System.out.println("Your output file for excluded hungarianPart: " + outputFilePathIssues);
             } else {
                 JOptionPane.showMessageDialog(new JFrame(), "You have to choose a directory\nPlease restart the program and try again!", "", JOptionPane.WARNING_MESSAGE);
                 System.exit(0);
